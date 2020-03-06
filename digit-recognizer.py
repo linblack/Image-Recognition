@@ -5,9 +5,11 @@ import pandas as pd
 from keras.utils import to_categorical
 import numpy as np
 from sklearn import preprocessing
+from keras.applications import VGG16
+import matplotlib.pyplot as plt
 
-df_original = pd.read_csv(r'digit-recognizer\train.csv', sep=',')
-df_submission = pd.read_csv(r'digit-recognizer\test.csv', sep=',')
+df_original = pd.read_csv(r'C:\Users\Blake\PycharmProjects\Image_Recognition\data\digit-recognizer\train.csv', sep=',')
+df_submission = pd.read_csv(r'C:\Users\Blake\PycharmProjects\Image_Recognition\data\digit-recognizer\test.csv', sep=',')
 
 df_image = df_original.iloc[:,1:]
 df_label = df_original.iloc[:,0]
@@ -32,23 +34,34 @@ submission_images = df_submission.values
 submission_images = submission_images.reshape((28000, 784, 1))
 submission_images = submission_images.astype('float32') / 255
 
-# model = models.Sequential()
-# model.add(layers.Conv1D(32, 3, activation='relu', input_shape=(784,1)))
-# model.add(layers.MaxPooling1D(2))
-# model.add(layers.Conv1D(64, 3, activation='relu'))
-# model.add(layers.MaxPooling1D(2))
-# model.add(layers.Conv1D(64, 3, activation='relu'))
-# model.add(layers.Flatten())
-# model.add(layers.Dense(64, activation='relu'))
-# model.add(layers.Dense(10, activation='softmax'))
-#
-# model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['acc'])
-# history = model.fit(train_images, train_labels, epochs=5, batch_size=64)
-# model.save('digit_recognizer_1.h5')
-model = models.load_model('digit_recognizer_1.h5')
+model = models.Sequential()
+model.add(layers.Conv1D(32, 3, activation='relu', input_shape=(784,1)))
+model.add(layers.MaxPooling1D(2))
+model.add(layers.Conv1D(64, 3, activation='relu'))
+model.add(layers.MaxPooling1D(2))
+model.add(layers.Conv1D(64, 3, activation='relu'))
+model.add(layers.MaxPooling1D(2))
+model.add(layers.Flatten())
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dense(10, activation='softmax'))
+
+model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['acc'])
+history = model.fit(train_images, train_labels, epochs=25, batch_size=64)
+
+# acc = history.history['acc']
+# epochs = range(1, len(acc)+1)
+# plt.figure()
+# plt.plot(epochs, acc, 'bo', label='Training acc')
+# plt.title('Training and Validation accuracy')
+# plt.legend()
+# plt.show()
+
+model.save('digit_recognizer_2.h5')
+# model = models.load_model('digit_recognizer_2.h5')
 # test_loss, test_acc = model.evaluate(test_images, test_labels)
 # print('test_acc:',test_acc)
 prediction = model.predict_classes(submission_images)
-print(prediction[:10])
+# print(prediction[:10])
 pd.DataFrame({'ImageID':list(range(1, len(prediction)+1)),
-              'Label':prediction}).to_csv('Digit_Recognizer_submission_3.csv', index=False, header=True)
+              'Label':prediction}).to_csv('Digit_Recognizer_submission_4.csv', index=False, header=True)
