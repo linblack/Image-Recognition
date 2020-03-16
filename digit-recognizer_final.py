@@ -33,11 +33,11 @@ Y_train = to_categorical(Y_train, num_classes=10)
 X_train, X_val, Y_train, Y_val = train_test_split(X_train, Y_train, test_size=0.1, random_state=2)
 
 model = models.Sequential()
-model.add(layers.Conv2D(64, (5,5), padding='same', activation='relu', input_shape=(28,28,1)))
+model.add(layers.Conv2D(64, (5,5), padding='same', activation='relu', input_shape=(28,28,1)))   #stride=1[default]
 model.add(layers.BatchNormalization())
 model.add(layers.Conv2D(64, (5,5), padding='same', activation='relu'))
 model.add(layers.BatchNormalization())
-model.add(layers.MaxPooling2D((2,2)))
+model.add(layers.MaxPooling2D((2,2)))                                                           #stride=2[default]
 model.add(layers.Dropout(0.25))
 model.add(layers.Conv2D(64, (3,3), padding='same', activation='relu'))
 model.add(layers.BatchNormalization())

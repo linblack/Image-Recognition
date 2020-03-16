@@ -45,7 +45,7 @@ print('Accuracy:',accuracy_score(Y_test, preds.argmax(axis=1)))
 
 #image cluster
 image = cv2.imread(r'C:\Users\Blake\Desktop\0912314928_2.JPG')
-x, y, z = image.shape
+x, y, z = image.shape                               #x:寬, y:長, z:RGB3色
 image_2d = image.reshape(x*y, z)
 kmeans_cluster = KMeans(n_clusters=7)
 kmeans_cluster.fit(image_2d)
